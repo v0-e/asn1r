@@ -1,0 +1,4 @@
+[asn1c]
+arguments = [
+    "asn1/example.asn1",
+]

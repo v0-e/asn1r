@@ -1,0 +1,40 @@
+EXAMPLE DEFINITIONS AUTOMATIC TAGS ::=
+BEGIN
+
+Dog ::= SEQUENCE {
+    name UTF8String,
+    age INTEGER (1..20),
+    breed Breed,
+    favouriteFood Food, 
+    canSwim BOOLEAN,
+    records SEQUENCE OF Record OPTIONAL
+}
+
+Breed ::= ENUMERATED {
+    labrador (0),
+    poodle   (1),
+    spaniel  (2)
+}
+
+Food ::= CHOICE {
+    dry DryFood,
+    wet WetFood
+}
+
+DryFood ::= SEQUENCE {
+    brand UTF8String,
+    priceKg INTEGER
+}
+
+WetFood ::= SEQUENCE {
+    brand UTF8String,
+    moisturePercentage INTEGER (0..100),
+    priceKg INTEGER
+}
+
+Record ::= SEQUENCE {
+    description UTF8String,
+    date GeneralizedTime
+}
+
+END 
