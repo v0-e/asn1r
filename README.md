@@ -32,7 +32,7 @@ let mut dog = Dog::default();
 dog.name.fill("Fido");
 dog.canSwim = 0;
 dog.age = 9;
-dog.breed = Breed_Breed_labrador as i64;
+dog.breed = Breed::Breed_labrador as i64;
 dog.favouriteFood.present = Food_PR::wet;
 dog.favouriteFood.choice.wet.brand.fill("Yummy");
 dog.favouriteFood.choice.wet.moisturePercentage = 80;
