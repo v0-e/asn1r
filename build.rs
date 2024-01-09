@@ -82,13 +82,12 @@ fn main() {
     config_file.read_to_string(&mut config_string).expect("Unable to read config.toml");
     let config: Config = toml::from_str(&config_string).expect("Unable to parse config.toml");
 
+    let mut asn1c_args = config.asn1c.arguments.clone();
+    asn1c_args.push("-D".to_string());
+    asn1c_args.push(out_dir.to_str().unwrap().to_string());
+    asn1c_args.push("-no-gen-example".to_string());
     Command::new("asn1c")
-        .args(&[
-            config.asn1c.arguments.join(" ").as_str(),
-            "-D",
-            out_dir.to_str().unwrap(),
-            "-no-gen-example",
-        ])
+        .args(asn1c_args.into_iter())
         .status()
         .unwrap();
 
