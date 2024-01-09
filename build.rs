@@ -158,18 +158,32 @@ fn main() {
 
 
 fn bindings_fixer(syntax: &mut syn::File) {
-    // Remove all the _PR prefixes from the enum constants (CHOICE.present)
     for i in &mut syntax.items {
         if let syn::Item::Mod(mi) = i {
             let mname = mi.ident.to_string();
-            if mname.contains("_PR") {
-                if let Some((_, mis)) = &mut mi.content {
+            if let Some((_, mis)) = &mut mi.content {
+                // Remove all the _PR prefixes from the enum constants (CHOICE.present)
+                if mname.contains("_PR") {
                     for mi in mis {
                         if let syn::Item::Const(ci) = mi {
                             let cname = ci.ident.to_string();
                             let prefix = mname.to_string()+"_";
                             let newname = cname.replace(prefix.as_str(), "");
                             ci.ident = syn::Ident::new(&newname, ci.ident.span());
+                        }
+                    }
+                // or remove prefix enum name_ prefix from enum elements
+                } else {
+                    if mis.len() > 1 {
+                        if let Item::Type(_ti) = &mis[0] {
+                            for mi in mis[1..].iter_mut() {
+                                if let Item::Const(ci) = mi {
+                                    let cname = ci.ident.to_string();
+                                    let prefix = mname.to_string()+"_";
+                                    let newname = cname.replace(prefix.as_str(), "");
+                                    ci.ident = syn::Ident::new(&newname, ci.ident.span());
+                                }
+                            }
                         }
                     }
                 }

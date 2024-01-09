@@ -95,7 +95,7 @@ mod tests {
         dog.name.fill("Fido");
         dog.canSwim = 0;
         dog.age = 9;
-        dog.breed = Breed::Breed_labrador as i64;
+        dog.breed = Breed::labrador as i64;
 
         dog.favouriteFood.present = Food_PR::wet;
         dog.favouriteFood.choice.wet.brand.fill("Yummy");
@@ -155,7 +155,7 @@ mod tests {
         dog.name.fill("Fido");
         dog.canSwim = 0;
         dog.age = 9;
-        dog.breed = Breed::Breed_labrador as i64;
+        dog.breed = Breed::labrador as i64;
 
         dog.favouriteFood.present = Food_PR::wet;
         dog.favouriteFood.choice.wet.brand.fill("Yummy");
