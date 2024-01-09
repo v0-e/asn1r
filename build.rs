@@ -19,7 +19,7 @@ struct Asn1cConfig {
 }
 
 /// Enhancements to the generated C code
-fn fixer(header: &PathBuf) {
+fn c_fixer(header: &PathBuf) {
     // Rust supports only unsafe access to unions. Here we replace all unions with structs.
     // If you want to use unions, see
     // https://rust-lang.github.io/rust-bindgen/using-unions.html#using-the-bindgenunion-type
@@ -105,7 +105,7 @@ fn main() {
                         "c" => sources.push(PathBuf::from(path)),
                         "h" => {
                             let pb = PathBuf::from(path);
-                            fixer(&pb);
+                            c_fixer(&pb);
                             headers.push(pb)
                         },
                         _ => {}
@@ -132,6 +132,7 @@ fn main() {
         .clang_arg(format!("-I{}", &out_dir.to_str().unwrap()))
         .derive_copy(false)
         .derive_debug(true)
+        .default_enum_style(bindgen::EnumVariation::ModuleConsts)
         .derive_default(true);
 
     for header in headers {
@@ -141,8 +142,13 @@ fn main() {
     let bindings = builder.generate().expect("Unable to generate bindings");
     let mut bindings_str = bindings.to_string();
 
+    //  Enhance the bindings
+    let mut syntax: syn::File = syn::parse_file(&bindings_str).unwrap();
+    bindings_fixer(&mut syntax);
+    bindings_str = prettyplease::unparse(&syntax);
+
     // Find typenames (ASN.1 defined types) and add trait implementations
-    let types = find_typenames(&mut bindings_str);
+    let types = find_typenames(&syntax);
     add_trait_impls(&mut bindings_str, &types);
 
     let mut f = File::create(out_dir.join("bindings.rs")).
@@ -150,11 +156,32 @@ fn main() {
     write!(f, "{}", bindings_str).expect("Unable to write bindings");
 }
 
-fn find_typenames(bindings: &String) -> Vec<String> {
+
+fn bindings_fixer(syntax: &mut syn::File) {
+    // Remove all the _PR prefixes from the enum constants (CHOICE.present)
+    for i in &mut syntax.items {
+        if let syn::Item::Mod(mi) = i {
+            let mname = mi.ident.to_string();
+            if mname.contains("_PR") {
+                if let Some((_, mis)) = &mut mi.content {
+                    for mi in mis {
+                        if let syn::Item::Const(ci) = mi {
+                            let cname = ci.ident.to_string();
+                            let prefix = mname.to_string()+"_";
+                            let newname = cname.replace(prefix.as_str(), "");
+                            ci.ident = syn::Ident::new(&newname, ci.ident.span());
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+fn find_typenames(syntax: &syn::File) -> Vec<String> {
     let mut ids = Vec::<String>::new();
 
     let n = "asn_DEF_".len();
-    let syntax = syn::parse_file(&bindings).expect("Unable to parse bindings");
 
     for i in &syntax.items {
         if let Item::ForeignMod(ifm) = i {
@@ -213,7 +240,7 @@ impl Drop for {TYPENAME} {
                     free_fn(
                         descriptor,
                         self as *mut _ as *mut c_void,
-                        asn_struct_free_method_ASFM_FREE_UNDERLYING,
+                        asn_struct_free_method::ASFM_FREE_UNDERLYING,
                     );
                 }
             }
@@ -269,7 +296,7 @@ impl Coder for {TYPENAME} {
                 buffer.as_ptr() as *const ::std::os::raw::c_void,
                 buffer.len() as usize,
             );
-            if rval.code == asn_dec_rval_code_e_RC_OK {
+            if rval.code == asn_dec_rval_code_e::RC_OK {
                 Ok(rval.consumed as usize)
             } else {
                 /* Returns Err with FFI integer error code as a DecoderError enum */

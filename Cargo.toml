@@ -9,7 +9,8 @@ edition = "2021"
 
 [build-dependencies]
 toml = "0.8.8"
+prettyplease = "0.2.16"
+syn = { version = "2.0.48", features = ["full", "parsing"] }
 serde = { version = "1.0.195", features = ["derive"] }
 cc = { version = "1.0.83", features = ["parallel"]}
 bindgen = "0.69.1"
-syn = {version = "2.0.43", features = ["full", "printing"]}

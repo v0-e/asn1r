@@ -24,9 +24,9 @@ enum AllocMethod {
 #[derive(Debug)]
 pub enum DecoderError {
     /// Decoder wants more data
-    want_more = asn_dec_rval_code_e_RC_WMORE as isize,
+    want_more = asn_dec_rval_code_e::RC_WMORE as isize,
     /// General error
-    failure = asn_dec_rval_code_e_RC_FAIL as isize,
+    failure = asn_dec_rval_code_e::RC_FAIL as isize,
 }
 
 impl DecoderError {
@@ -42,31 +42,31 @@ impl DecoderError {
 #[derive(Debug)]
 pub enum EncodingRules {
     /// Basic Encoding Rules
-    ber = asn_transfer_syntax_ATS_BER as isize,
+    ber = asn_transfer_syntax::ATS_BER as isize,
     /// Distinguished Encoding Rules
-    der = asn_transfer_syntax_ATS_DER as isize,
+    der = asn_transfer_syntax::ATS_DER as isize,
     /// Canonical Encoding Rules
-    cer = asn_transfer_syntax_ATS_CER as isize,
+    cer = asn_transfer_syntax::ATS_CER as isize,
     /// Octet Encoding Rules
-    oer = asn_transfer_syntax_ATS_BASIC_OER as isize,
+    oer = asn_transfer_syntax::ATS_BASIC_OER as isize,
     /// Canonical Octet Encoding Rules
-    coer = asn_transfer_syntax_ATS_CANONICAL_OER as isize,
+    coer = asn_transfer_syntax::ATS_CANONICAL_OER as isize,
     /// Unaligned Packed Encoding Rules,
-    uper = asn_transfer_syntax_ATS_UNALIGNED_BASIC_PER as isize,
+    uper = asn_transfer_syntax::ATS_UNALIGNED_BASIC_PER as isize,
     /// Canonical Unaligned Packed Encoding Rules,
-    cuper = asn_transfer_syntax_ATS_UNALIGNED_CANONICAL_PER as isize,
+    cuper = asn_transfer_syntax::ATS_UNALIGNED_CANONICAL_PER as isize,
     /// Aligned Packed Encoding Rules,
-    aper = asn_transfer_syntax_ATS_ALIGNED_BASIC_PER as isize,
+    aper = asn_transfer_syntax::ATS_ALIGNED_BASIC_PER as isize,
     /// Canonical Aligned Packed Encoding Rules,
-    caper = asn_transfer_syntax_ATS_ALIGNED_CANONICAL_PER as isize,
+    caper = asn_transfer_syntax::ATS_ALIGNED_CANONICAL_PER as isize,
     /// XML Encoding Rules
-    xer = asn_transfer_syntax_ATS_BASIC_XER as isize,
+    xer = asn_transfer_syntax::ATS_BASIC_XER as isize,
     /// Canonical XML Encoding Rules
-    cxer = asn_transfer_syntax_ATS_CANONICAL_XER as isize,
+    cxer = asn_transfer_syntax::ATS_CANONICAL_XER as isize,
     /// JSON Encoding Rules
-    jer = asn_transfer_syntax_ATS_JER as isize,
+    jer = asn_transfer_syntax::ATS_JER as isize,
     /// JSON Encoding Rules (minified)
-    jerm = asn_transfer_syntax_ATS_JER_MINIFIED as isize,
+    jerm = asn_transfer_syntax::ATS_JER_MINIFIED as isize,
 }
     
 impl OCTET_STRING {
@@ -95,9 +95,9 @@ mod tests {
         dog.name.fill("Fido");
         dog.canSwim = 0;
         dog.age = 9;
-        dog.breed = Breed_Breed_labrador as i64;
+        dog.breed = Breed::Breed_labrador as i64;
 
-        dog.favouriteFood.present = Food_PR_Food_PR_wet;
+        dog.favouriteFood.present = Food_PR::wet;
         dog.favouriteFood.choice.wet.brand.fill("Yummy");
         dog.favouriteFood.choice.wet.moisturePercentage = 80;
         dog.favouriteFood.choice.wet.priceKg = 12;
@@ -155,9 +155,9 @@ mod tests {
         dog.name.fill("Fido");
         dog.canSwim = 0;
         dog.age = 9;
-        dog.breed = Breed_Breed_labrador as i64;
+        dog.breed = Breed::Breed_labrador as i64;
 
-        dog.favouriteFood.present = Food_PR_Food_PR_wet;
+        dog.favouriteFood.present = Food_PR::wet;
         dog.favouriteFood.choice.wet.brand.fill("Yummy");
         dog.favouriteFood.choice.wet.moisturePercentage = 80;
         dog.favouriteFood.choice.wet.priceKg = 12;
