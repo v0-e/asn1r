@@ -74,6 +74,16 @@ impl OCTET_STRING {
         self.buf = s.as_ptr() as *mut u8;
         self.size = s.len();
     }
+
+    pub fn view(&self) -> &[u8] {
+        unsafe {
+            std::slice::from_raw_parts(self.buf, self.size)
+        }
+    }
+
+    pub fn get(&self) -> Vec<u8> {
+        self.view().to_vec()
+    }
 }
 
 #[cfg(test)]
@@ -144,6 +154,8 @@ mod tests {
         assert_eq!(dog.favouriteFood.present, clone.favouriteFood.present);
         assert_eq!(dog.favouriteFood.choice.wet.moisturePercentage, 
             clone.favouriteFood.choice.wet.moisturePercentage);
+
+        println!("Decoded name: {}", show(clone.name.view()));
     }
 
     // Deep-copy test
